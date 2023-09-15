@@ -1,5 +1,5 @@
 import { fastifyMultipart } from '@fastify/multipart';
-import { FastifyInstance } from "fastify";
+import { FastifyInstance } from 'fastify';
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -17,13 +17,13 @@ export async function uploadVideoRoute(app: FastifyInstance) {
   })
   
   app.post('/videos', async (request, reply) => {
-    const data = await request.file();
-
+    const data = await request.file()
+    
     if(!data) {
-      return reply.status(400).send({error: 'File not found'})
+      return reply.status(400).send({error: 'File not found', data})
     }
     
-    const extension = path.extname(data.filename);
+    const extension = path.extname(data.filename)
     
     if(extension !== '.mp3') {
       return reply.status(400).send({error: 'Invalid input type, please upload .MP3'})
@@ -43,8 +43,6 @@ export async function uploadVideoRoute(app: FastifyInstance) {
       }
     })
 
-    return {
-      video
-    }
+    return reply.send({video})
   })
 }
