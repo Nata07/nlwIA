@@ -1,12 +1,19 @@
-import { FileVideo, Github, Upload, Wand2 } from "lucide-react";
+import { Github, Wand2 } from "lucide-react";
+import { PromptSelect } from "./components/prompts-select";
 import { Button } from "./components/ui/button";
 import { Label } from "./components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./components/ui/select";
 import { Separator } from "./components/ui/separator";
 import { Slider } from "./components/ui/slider";
 import { Textarea } from "./components/ui/textarea";
+import { VideoInputForm } from "./components/video-input-form";
 
 export function App() {
+
+  function handlePromptSelect(template: string) {
+    console.log('template')
+    console.log(template)
+  }
   return (
     <div className="min-h-screen flex flex-col">
       <div className="px-6 py-5 flex items-center justify-between border-b">
@@ -29,46 +36,14 @@ export function App() {
           </p>
         </div>
         <aside className="w-80 space-y-6 ">
-          <form className="space-y-6">
-            <label 
-              htmlFor="video" 
-              className="text-sm gap-2 border flex flex-col text-muted-foreground rounded-md aspect-video items-center justify-center hover:bg-primary/20"
-            >
-              <FileVideo className="w-4 h-4" />
-              Selecione um Video 
-            </label>
-            <input type="file" id="video" accept="video/mp4" className="sr-only" />
-
-            <Separator />
-
-            <div className="space-y-2">
-              <Label htmlFor="transcription_prompt">Prompt de transcrição</Label>
-              <Textarea 
-                id="transcription_prompt" 
-                className="leading-relaxed h-24 resize-none"
-                placeholder="Inclua palavras chaves mencionadas no video separadas por virgula (,)" 
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              Carregar Video
-              <Upload className="w-4 h-4 ml-2" />
-            </Button>
-          </form>
+          <VideoInputForm />
 
           <Separator />
 
           <form className="space-y-6">
-          <div className="space-y-2">
+            <div className="space-y-2">
               <Label>Prompt</Label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue className="text-muted-foreground" placeholder="Selecione um prompt..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="title">Titulo do You tube</SelectItem>
-                  <SelectItem value="description">Descrição</SelectItem>
-                </SelectContent>
-              </Select>
+              <PromptSelect onChangeSelect={handlePromptSelect} />
               <span className="block text-xs text-muted-foreground italic">Você pode customizar essa opção em breve</span>
             </div>
 
