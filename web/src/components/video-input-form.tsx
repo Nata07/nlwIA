@@ -17,9 +17,10 @@ const statusMessages = {
 }
 
 interface InputVideoFormProps {
-  setVideoId: (id: string) => void
+  onChangeVideoId: (id: string) => void
 }
-export function VideoInputForm({ setVideoId }: InputVideoFormProps) {
+
+export function VideoInputForm({ onChangeVideoId }: InputVideoFormProps) {
   const [videoFile, setVideoFile] = useState<File | null>(null)
   const propInputRef = useRef<HTMLTextAreaElement>(null);
   const [status, setStatus] = useState<Status>('waiting')
@@ -83,15 +84,17 @@ export function VideoInputForm({ setVideoId }: InputVideoFormProps) {
     const response = await api.post('/videos', data)
 
     const videoId = response.data.video.id
+
     setStatus('generated')
     
     await api.post(`/video/${videoId}/transcription`, {
       prompt,
     })
     
-    console.log('finalizou')
     setStatus('success')
-    setVideoId(videoId);
+    console.log('chamou o onChange')
+    console.log(onChangeVideoId)
+    onChangeVideoId(videoId)
   }
 
   function handleFileSelected(event: ChangeEvent<HTMLInputElement>) {
@@ -105,8 +108,6 @@ export function VideoInputForm({ setVideoId }: InputVideoFormProps) {
     
     setVideoFile(selectedFile)
   }
-  console.log('videoFile')
-  console.log(videoFile)
   
   const previewUrl = useMemo(() => {
     if(!videoFile) {

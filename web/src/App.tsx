@@ -1,3 +1,4 @@
+import { useCompletion } from 'ai/react';
 import { Github, Wand2 } from "lucide-react";
 import { useState } from "react";
 import { PromptSelect } from "./components/prompts-select";
@@ -13,16 +14,34 @@ export function App() {
   const [temperature, setTemperature] = useState(0.5)
   const [videoId, setVideoId] = useState<string | null>(null)
   
-  function handlePromptSelect(template: string) {
-    console.log('template')
-    console.log(template)
-  }
+  // function handlePromptSelect(template: string) {
+  //   console.log('template')
+  //   console.log(template)
+  // }
 
   function handleSetVideoId(id: string) {
-    console.log('videoId')
+    console.log('videoId app')
     console.log(id)
     setVideoId(id)
   }
+
+  const {
+    input,
+    setInput,
+    handleInputChange,
+    handleSubmit,
+    completion,
+    isLoading
+  } = useCompletion({
+    api: 'http://localhost:3333/ai/complete',
+    body: {
+      videoId,
+      temperature,
+    },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
   return (
     <div className="min-h-screen flex flex-col">
       <div className="px-6 py-5 flex items-center justify-between border-b">
@@ -37,22 +56,32 @@ export function App() {
       <main className="flex-1 p-6 flex gap-6">
         <div className="flex flex-1 flex-col gap-4">
           <div className="grid grid-rows-2 gap-4 flex-1">
-            <Textarea placeholder="Inclua o prompt para IA" className="resize-none p-4 leading-relaxed" />
-            <Textarea placeholder="Resultado Gerado" readOnly className="resize-none p-4 leading-relaxed"/>
+            <Textarea 
+              placeholder="Inclua o prompt para IA" 
+              value={input}
+              onChange={handleInputChange}
+              className="resize-none p-4 leading-relaxed" 
+            />
+            <Textarea 
+              placeholder="Resultado Gerado" 
+              readOnly 
+              className="resize-none p-4 leading-relaxed"
+              value={completion}  
+            />
           </div>
           <p className="text-muted-foreground text-sm">Lembre-se: voce pode usar a variável <code className="text-violet-400 font-bold">{'transcription'}</code> do seu prompt 
             para adicionar o conteúdo da transcrição do video adicionado
           </p>
         </div>
         <aside className="w-80 space-y-6 ">
-          <VideoInputForm setVideoId={handleSetVideoId} />
+          <VideoInputForm onChangeVideoId={handleSetVideoId} />
 
           <Separator />
 
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label>Prompt</Label>
-              <PromptSelect onChangeSelect={handlePromptSelect} />
+              <PromptSelect onChangeSelect={setInput} />
               <span className="block text-xs text-muted-foreground italic">Você pode customizar essa opção em breve</span>
             </div>
 
@@ -88,7 +117,7 @@ export function App() {
             
             <Separator />
             
-            <Button className="w-full" type="submit">
+            <Button disabled={isLoading} className="w-full" type="submit">
               Executar
               <Wand2 className="h-4 w-4 ml-2" />
             </Button>
