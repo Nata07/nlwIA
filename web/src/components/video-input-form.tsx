@@ -15,7 +15,11 @@ const statusMessages = {
   generated: 'Transcrevendo...',
   success: 'Sucesso...',
 }
-export function VideoInputForm() {
+
+interface InputVideoFormProps {
+  setVideoId: (id: string) => void
+}
+export function VideoInputForm({ setVideoId }: InputVideoFormProps) {
   const [videoFile, setVideoFile] = useState<File | null>(null)
   const propInputRef = useRef<HTMLTextAreaElement>(null);
   const [status, setStatus] = useState<Status>('waiting')
@@ -79,15 +83,15 @@ export function VideoInputForm() {
     const response = await api.post('/videos', data)
 
     const videoId = response.data.video.id
-
     setStatus('generated')
-
+    
     await api.post(`/video/${videoId}/transcription`, {
       prompt,
     })
-
+    
     console.log('finalizou')
     setStatus('success')
+    setVideoId(videoId);
   }
 
   function handleFileSelected(event: ChangeEvent<HTMLInputElement>) {

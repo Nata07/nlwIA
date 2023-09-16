@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 
 type ItemProps = {
   id: string;
-  tilte: string;
+  title: string;
   template: string;
 }
 interface PromptProps {
@@ -33,7 +33,7 @@ export function PromptSelect({ onChangeSelect}: PromptProps) {
       </SelectTrigger>
       <SelectContent>
         {prompts?.map(item => (
-          <SelectItem key={item.id} value={item.template}>{item.tilte}</SelectItem>
+          <SelectItem key={item.id} value={item.template}>{item.title}</SelectItem>
         ))}
       </SelectContent>
     </Select>
